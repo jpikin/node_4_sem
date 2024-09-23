@@ -1,10 +1,16 @@
 const express = require('express');
+const joi = require('joi');
 
 const app = express();
 
 const users = [];
 
 let ID = 0;
+
+const userSchema = joi.object({
+    name: joi.string().min(2).required(),
+    age: joi.number().min(0).max(101).required()
+});
 
 app.use(express.json());
 
@@ -21,6 +27,8 @@ app.get('/users', (req, res)=>{
 });
 
 app.post('/users', (req, res)=>{
+    const result = userSchema.validate(req.body);
+    if (result.error) {return res.status(404).send({error: result.error.details})}
     let user = {
         id : ID++,
         ...req.body
@@ -31,6 +39,8 @@ app.post('/users', (req, res)=>{
 });
 
 app.put('/users/:id', (req, res)=>{
+    const result = userSchema.validate(req.body);
+    if (result.error) {return res.status(404).send({error: result.error.details})}
     const userID = +req.params.id;
     const user = users.find(user => user.id === userID);
     if(user){
