@@ -2,7 +2,6 @@ const express = require('express');
 const joi = require('joi');
 const fs = require('fs');
 const app = express();
-const users = [];
 const filePath = './static/data.json'
 let ID = 0;
 
