@@ -13,12 +13,17 @@ const userSchema = joi.object({
 
 app.use(express.json());
 
+/** 
+ * Получаем список всех пользователей
+ */
 app.get('/users', (req, res)=>{
-   
     res.send(getJSON());    
 }); 
 
- app.get('/users/:id', (req, res)=>{
+/** 
+ * Получаем пользователя по id
+ */ 
+app.get('/users/:id', (req, res)=>{
     const userID = +req.params.id;
     const parsedData = getJSON();
     const user = parsedData.find(user => user.id === userID);
@@ -27,6 +32,9 @@ app.get('/users', (req, res)=>{
     
 });
 
+/** 
+ * Добавляем пользователя
+ */
 app.post('/users', (req, res)=>{
     const result = userSchema.validate(req.body);
     if (result.error) {return res.status(404).send({error: result.error.details})}
@@ -40,6 +48,9 @@ app.post('/users', (req, res)=>{
     res.send(user);
 });
 
+/** 
+ * Редактируем пользователя по ip
+ */
 app.put('/users/:id', (req, res)=>{
     const result = userSchema.validate(req.body);
     if (result.error) {return res.status(404).send({error: result.error.details})}
@@ -57,7 +68,9 @@ app.put('/users/:id', (req, res)=>{
     saveJSON(parsedData);
 });
 
-
+/**
+ * Удаляем пользователя по id
+ */
 app.delete('/users/:id', (req, res)=>{
     const userID = +req.params.id;
     const parsedData = getJSON();
@@ -75,11 +88,18 @@ app.delete('/users/:id', (req, res)=>{
 
 app.listen(3000);
 
+/**
+ * Читаем данные из JSON
+ */
 function getJSON(){
     const data = fs.readFileSync(filePath, 'utf8')
     return JSON.parse(data);
 }
+
+/**
+ * Сохраняем данные в JSON 
+ */
 function saveJSON(parsedData){
-    const updatedData = JSON.stringify(parsedData, null, 2); // возможно функция???
+    const updatedData = JSON.stringify(parsedData, null, 2);
     fs.writeFileSync(filePath, updatedData, 'utf-8');
 }
