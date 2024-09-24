@@ -22,7 +22,8 @@ app.get('/users', (req, res)=>{
 
  app.get('/users/:id', (req, res)=>{
     const userID = +req.params.id;
-    const user = users.find(user => user.id === userID);
+const parsedData = getJSON();
+    const user = parsedData.find(user => user.id === userID);
     
     user ? res.send({user}) : res.status(404).send({user : null});
     
@@ -35,8 +36,7 @@ app.post('/users', (req, res)=>{
         id : ID++,
         ...req.body
     }
-    const data = fs.readFileSync(filePath, 'utf8');
-    const parseData = JSON.parse(data);
+    const parseData = getJSON();
     parseData.push(user);
     const updatedData = JSON.stringify(parseData, null, 2);
     fs.writeFileSync(filePath, updatedData, 'utf-8');
@@ -72,3 +72,9 @@ app.delete('/users/:id', (req, res)=>{
     }
 });
 app.listen(3000);
+
+function getJSON(){
+    const data = fs.readFileSync(filePath, 'utf8')
+    return JSON.parse(data);
+    
+}
