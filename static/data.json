@@ -5,18 +5,13 @@
     "age": "40"
   },
   {
-    "id": 0,
-    "name": "Ivan87",
-    "age": "40"
+    "id": 1,
+    "name": "Oleg",
+    "age": 9
   },
   {
-    "id": 0,
-    "name": "Ivan87",
-    "age": "40"
-  },
-  {
-    "id": 0,
-    "name": "Ivan87",
-    "age": "40"
+    "id": 2,
+    "name": "Natalia",
+    "age": 17
   }
 ]

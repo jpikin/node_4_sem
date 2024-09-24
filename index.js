@@ -14,15 +14,13 @@ const userSchema = joi.object({
 app.use(express.json());
 
 app.get('/users', (req, res)=>{
-    const data = fs.readFileSync(filePath, 'utf8')
-    const parsedData = JSON.parse(data);
-    
-    res.send(parsedData);    
+   
+    res.send(getJSON());    
 }); 
 
  app.get('/users/:id', (req, res)=>{
     const userID = +req.params.id;
-const parsedData = getJSON();
+    const parsedData = getJSON();
     const user = parsedData.find(user => user.id === userID);
     
     user ? res.send({user}) : res.status(404).send({user : null});
@@ -36,9 +34,9 @@ app.post('/users', (req, res)=>{
         id : ID++,
         ...req.body
     }
-    const parseData = getJSON();
-    parseData.push(user);
-    const updatedData = JSON.stringify(parseData, null, 2);
+    const parsedData = getJSON();
+    parsedData.push(user);
+    const updatedData = JSON.stringify(parsedData, null, 2); // возможно функция???
     fs.writeFileSync(filePath, updatedData, 'utf-8');
     res.send(user);
 });
@@ -47,7 +45,8 @@ app.put('/users/:id', (req, res)=>{
     const result = userSchema.validate(req.body);
     if (result.error) {return res.status(404).send({error: result.error.details})}
     const userID = +req.params.id;
-    const user = users.find(user => user.id === userID);
+    const parsedData = getJSON(); 
+    const user = parsedData.find(user => user.id === userID);
     if(user){
         const {name, age} = req.body;
         user.name = name,
@@ -56,6 +55,8 @@ app.put('/users/:id', (req, res)=>{
     } else {
         res.status(404).send({user : null});
     }
+    const updatedData = JSON.stringify(parsedData, null, 2); // возможно функция???
+    fs.writeFileSync(filePath, updatedData, 'utf-8');
 });
 
 
