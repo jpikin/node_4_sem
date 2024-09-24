@@ -36,8 +36,7 @@ app.post('/users', (req, res)=>{
     }
     const parsedData = getJSON();
     parsedData.push(user);
-    const updatedData = JSON.stringify(parsedData, null, 2); // возможно функция???
-    fs.writeFileSync(filePath, updatedData, 'utf-8');
+    saveJSON(parsedData);
     res.send(user);
 });
 
@@ -55,27 +54,32 @@ app.put('/users/:id', (req, res)=>{
     } else {
         res.status(404).send({user : null});
     }
-    const updatedData = JSON.stringify(parsedData, null, 2); // возможно функция???
-    fs.writeFileSync(filePath, updatedData, 'utf-8');
+    saveJSON(parsedData);
 });
 
 
 app.delete('/users/:id', (req, res)=>{
     const userID = +req.params.id;
-    const user = users.find(user => user.id === userID);
+    const parsedData = getJSON();
+    const user = parsedData.find(user => user.id === userID);
     
     if(user){
-        const userIndex = users.indexOf(user);
-        users.splice(userIndex, 1);
-        res.send({user})
+        const userIndex = parsedData.indexOf(user);
+        parsedData.splice(userIndex, 1);
+        saveJSON(parsedData);
+        res.send({user});
     } else {
         res.status(404).send({user : null});
     }
 });
+
 app.listen(3000);
 
 function getJSON(){
     const data = fs.readFileSync(filePath, 'utf8')
     return JSON.parse(data);
-    
+}
+function saveJSON(parsedData){
+    const updatedData = JSON.stringify(parsedData, null, 2); // возможно функция???
+    fs.writeFileSync(filePath, updatedData, 'utf-8');
 }
