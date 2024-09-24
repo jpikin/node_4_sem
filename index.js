@@ -1,10 +1,9 @@
 const express = require('express');
 const joi = require('joi');
-
+const fs = require('fs');
 const app = express();
-
 const users = [];
-
+const filePath = './static/data.json'
 let ID = 0;
 
 const userSchema = joi.object({
@@ -15,8 +14,11 @@ const userSchema = joi.object({
 app.use(express.json());
 
 app.get('/users', (req, res)=>{
-    res.send({users});
-});
+    const data = fs.readFileSync(filePath, 'utf8')
+    const parsedData = JSON.parse(data);
+    
+    res.send(parsedData);    
+}); 
 
  app.get('/users/:id', (req, res)=>{
     const userID = +req.params.id;
@@ -33,9 +35,12 @@ app.post('/users', (req, res)=>{
         id : ID++,
         ...req.body
     }
-    users.push(user);
-    res.send({user});
-
+    const data = fs.readFileSync(filePath, 'utf8');
+    const parseData = JSON.parse(data);
+    parseData.push(user);
+    const updatedData = JSON.stringify(parseData, null, 2);
+    fs.writeFileSync(filePath, updatedData, 'utf-8');
+    res.send(user);
 });
 
 app.put('/users/:id', (req, res)=>{
